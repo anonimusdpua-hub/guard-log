@@ -68,23 +68,26 @@ input {
 
 button {
   width: 100%;
-  margin-top: 16px;
-  padding: 15px;
+  margin-top: 12px;
+  padding: 14px;
   border: none;
   border-radius: 10px;
-  background: #2563eb;
   color: white;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: bold;
 }
 
-.save-btn:active,
-.delete-btn:active {
-  transform: scale(0.98);
+.save-btn {
+  background: #2563eb;
+  margin-top: 16px;
 }
 
-.search {
-  margin-bottom: 15px;
+.edit-btn {
+  background: #f59e0b;
+}
+
+.delete-btn {
+  background: #dc2626;
 }
 
 .record {
@@ -97,7 +100,7 @@ button {
 }
 
 .car {
-  font-size: 19px;
+  font-size: 20px;
   font-weight: bold;
 }
 
@@ -120,11 +123,8 @@ button {
   display: none;
 }
 
-.delete-btn {
-  background: #dc2626;
-  margin-top: 12px;
-  padding: 11px;
-  font-size: 15px;
+.search {
+  margin-bottom: 15px;
 }
 
 .empty {
@@ -160,7 +160,7 @@ button {
 
     <img id="preview" class="photo-preview">
 
-    <button class="save-btn" onclick="saveRecord()">
+    <button class="save-btn" id="saveButton" onclick="saveRecord()">
       💾 Зберегти запис
     </button>
 
@@ -186,6 +186,7 @@ button {
 <script>
 
 let photoData = "";
+let editingIndex = null;
 
 const photoInput = document.getElementById("photo");
 const preview = document.getElementById("preview");
@@ -231,13 +232,32 @@ function saveRecord() {
     JSON.parse(localStorage.getItem("guardRecords") || "[]");
 
 
-  records.unshift({
-    carNumber: carNumber,
-    phone: phone,
-    name: name,
-    time: new Date().toLocaleString("uk-UA"),
-    photo: photoData
-  });
+  if (editingIndex !== null) {
+
+    records[editingIndex] = {
+      ...records[editingIndex],
+      carNumber: carNumber,
+      phone: phone,
+      name: name,
+      photo: photoData
+    };
+
+    editingIndex = null;
+
+    document.getElementById("saveButton").innerHTML =
+      "💾 Зберегти запис";
+
+  } else {
+
+    records.unshift({
+      carNumber: carNumber,
+      phone: phone,
+      name: name,
+      time: new Date().toLocaleString("uk-UA"),
+      photo: photoData
+    });
+
+  }
 
 
   localStorage.setItem(
@@ -246,15 +266,53 @@ function saveRecord() {
   );
 
 
-  document.getElementById("carNumber").value = "";
-  document.getElementById("phone").value = "+380";
-  document.getElementById("name").value = "";
-  document.getElementById("photo").value = "";
-
-  preview.style.display = "none";
-  photoData = "";
+  clearForm();
 
   renderRecords();
+
+}
+
+
+function editRecord(index) {
+
+  const records =
+    JSON.parse(localStorage.getItem("guardRecords") || "[]");
+
+  const record = records[index];
+
+
+  document.getElementById("carNumber").value =
+    record.carNumber;
+
+  document.getElementById("phone").value =
+    record.phone;
+
+  document.getElementById("name").value =
+    record.name;
+
+
+  photoData = record.photo || "";
+
+
+  if (photoData) {
+    preview.src = photoData;
+    preview.style.display = "block";
+  } else {
+    preview.style.display = "none";
+  }
+
+
+  editingIndex = index;
+
+
+  document.getElementById("saveButton").innerHTML =
+    "✅ Зберегти зміни";
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 
 }
 
@@ -263,17 +321,37 @@ function deleteRecord(index) {
 
   if (!confirm("Видалити цей запис?")) return;
 
+
   const records =
     JSON.parse(localStorage.getItem("guardRecords") || "[]");
 
   records.splice(index, 1);
+
 
   localStorage.setItem(
     "guardRecords",
     JSON.stringify(records)
   );
 
+
   renderRecords();
+
+}
+
+
+function clearForm() {
+
+  document.getElementById("carNumber").value = "";
+
+  document.getElementById("phone").value = "+380";
+
+  document.getElementById("name").value = "";
+
+  document.getElementById("photo").value = "";
+
+  preview.style.display = "none";
+
+  photoData = "";
 
 }
 
@@ -283,10 +361,12 @@ function renderRecords() {
   const records =
     JSON.parse(localStorage.getItem("guardRecords") || "[]");
 
+
   const search =
     document.getElementById("search").value
       .toLowerCase()
       .trim();
+
 
   const container =
     document.getElementById("records");
@@ -294,7 +374,10 @@ function renderRecords() {
 
   const filtered = records
     .map(function(record, index) {
-      return { ...record, originalIndex: index };
+      return {
+        ...record,
+        originalIndex: index
+      };
     })
     .filter(function(record) {
 
@@ -315,6 +398,7 @@ function renderRecords() {
       '<div class="empty">Записів не знайдено</div>';
 
     return;
+
   }
 
 
@@ -322,15 +406,20 @@ function renderRecords() {
     filtered.map(function(record) {
 
       return `
+
         <div class="record">
 
           <div class="car">
             🚗 ${record.carNumber}
           </div>
 
-          <div>👤 ${record.name || "—"}</div>
+          <div>
+            👤 ${record.name || "—"}
+          </div>
 
-          <div>📞 ${record.phone || "—"}</div>
+          <div>
+            📞 ${record.phone || "—"}
+          </div>
 
           <div class="time">
             🕒 ${record.time}
@@ -343,6 +432,13 @@ function renderRecords() {
           }
 
           <button
+            class="edit-btn"
+            onclick="editRecord(${record.originalIndex})"
+          >
+            ✏️ Редагувати
+          </button>
+
+          <button
             class="delete-btn"
             onclick="deleteRecord(${record.originalIndex})"
           >
@@ -350,6 +446,7 @@ function renderRecords() {
           </button>
 
         </div>
+
       `;
 
     }).join("");

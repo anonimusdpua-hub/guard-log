@@ -1,133 +1,138 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Журнал охорони</title>
+<title>Журнал охорони</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      color: #111827;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  color: #111827;
+}
 
-    header {
-      background: #111827;
-      color: white;
-      text-align: center;
-      padding: 22px 15px;
-    }
+header {
+  background: #111827;
+  color: white;
+  text-align: center;
+  padding: 22px 15px;
+}
 
-    header h1 {
-      margin: 0 0 6px;
-      font-size: 24px;
-    }
+header h1 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
 
-    header p {
-      margin: 0;
-      opacity: 0.8;
-    }
+header p {
+  margin: 0;
+  opacity: 0.8;
+}
 
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 15px;
-    }
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 15px;
+}
 
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
 
-    h2 {
-      margin-top: 0;
-    }
+h2 {
+  margin-top: 0;
+}
 
-    label {
-      display: block;
-      font-weight: bold;
-      margin-top: 14px;
-      margin-bottom: 6px;
-    }
+label {
+  display: block;
+  font-weight: bold;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      font-size: 16px;
-    }
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+}
 
-    button {
-      width: 100%;
-      margin-top: 20px;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      background: #2563eb;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+}
 
-    button:active {
-      transform: scale(0.98);
-    }
+.save-btn:active,
+.delete-btn:active {
+  transform: scale(0.98);
+}
 
-    .record {
-      padding: 14px 0;
-      border-bottom: 1px solid #e5e7eb;
-    }
+.search {
+  margin-bottom: 15px;
+}
 
-    .record:last-child {
-      border-bottom: none;
-    }
+.record {
+  padding: 15px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
 
-    .car {
-      font-size: 19px;
-      font-weight: bold;
-    }
+.record:last-child {
+  border-bottom: none;
+}
 
-    .time {
-      color: #64748b;
-      font-size: 13px;
-      margin-top: 6px;
-    }
+.car {
+  font-size: 19px;
+  font-weight: bold;
+}
 
-    .photo-preview {
-      width: 100%;
-      margin-top: 12px;
-      border-radius: 12px;
-      display: none;
-      max-height: 300px;
-      object-fit: cover;
-    }
+.time {
+  color: #64748b;
+  font-size: 13px;
+  margin-top: 7px;
+}
 
-    .record img {
-      width: 100%;
-      margin-top: 10px;
-      border-radius: 12px;
-      max-height: 300px;
-      object-fit: cover;
-    }
+.photo-preview,
+.record img {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 12px;
+  max-height: 300px;
+  object-fit: cover;
+}
 
-    .empty {
-      text-align: center;
-      color: #64748b;
-      padding: 20px;
-    }
-  </style>
+.photo-preview {
+  display: none;
+}
+
+.delete-btn {
+  background: #dc2626;
+  margin-top: 12px;
+  padding: 11px;
+  font-size: 15px;
+}
+
+.empty {
+  text-align: center;
+  color: #64748b;
+  padding: 20px;
+}
+</style>
 </head>
 
 <body>
@@ -155,13 +160,22 @@
 
     <img id="preview" class="photo-preview">
 
-    <button onclick="saveRecord()">💾 Зберегти запис</button>
+    <button class="save-btn" onclick="saveRecord()">
+      💾 Зберегти запис
+    </button>
 
   </div>
 
   <div class="card">
 
     <h2>📋 Записи</h2>
+
+    <input
+      class="search"
+      id="search"
+      placeholder="🔎 Пошук: номер, телефон або ім'я"
+      oninput="renderRecords()"
+    >
 
     <div id="records"></div>
 
@@ -185,13 +199,9 @@ photoInput.addEventListener("change", function(event) {
   const reader = new FileReader();
 
   reader.onload = function(e) {
-
     photoData = e.target.result;
-
     preview.src = photoData;
-
     preview.style.display = "block";
-
   };
 
   reader.readAsDataURL(file);
@@ -201,43 +211,33 @@ photoInput.addEventListener("change", function(event) {
 
 function saveRecord() {
 
-  const carNumber = document.getElementById("carNumber").value.trim();
+  const carNumber =
+    document.getElementById("carNumber").value.trim();
 
-  const phone = document.getElementById("phone").value.trim();
+  const phone =
+    document.getElementById("phone").value.trim();
 
-  const name = document.getElementById("name").value.trim();
+  const name =
+    document.getElementById("name").value.trim();
 
 
   if (!carNumber) {
-
     alert("Введіть номер автомобіля!");
-
     return;
-
   }
 
 
-  const records = JSON.parse(
-    localStorage.getItem("guardRecords") || "[]"
-  );
+  const records =
+    JSON.parse(localStorage.getItem("guardRecords") || "[]");
 
 
-  const record = {
-
+  records.unshift({
     carNumber: carNumber,
-
     phone: phone,
-
     name: name,
-
     time: new Date().toLocaleString("uk-UA"),
-
     photo: photoData
-
-  };
-
-
-  records.unshift(record);
+  });
 
 
   localStorage.setItem(
@@ -247,17 +247,31 @@ function saveRecord() {
 
 
   document.getElementById("carNumber").value = "";
-
   document.getElementById("phone").value = "+380";
-
   document.getElementById("name").value = "";
-
   document.getElementById("photo").value = "";
 
   preview.style.display = "none";
-
   photoData = "";
 
+  renderRecords();
+
+}
+
+
+function deleteRecord(index) {
+
+  if (!confirm("Видалити цей запис?")) return;
+
+  const records =
+    JSON.parse(localStorage.getItem("guardRecords") || "[]");
+
+  records.splice(index, 1);
+
+  localStorage.setItem(
+    "guardRecords",
+    JSON.stringify(records)
+  );
 
   renderRecords();
 
@@ -266,56 +280,79 @@ function saveRecord() {
 
 function renderRecords() {
 
-  const records = JSON.parse(
-    localStorage.getItem("guardRecords") || "[]"
-  );
+  const records =
+    JSON.parse(localStorage.getItem("guardRecords") || "[]");
+
+  const search =
+    document.getElementById("search").value
+      .toLowerCase()
+      .trim();
+
+  const container =
+    document.getElementById("records");
 
 
-  const container = document.getElementById("records");
+  const filtered = records
+    .map(function(record, index) {
+      return { ...record, originalIndex: index };
+    })
+    .filter(function(record) {
+
+      const text = (
+        record.carNumber + " " +
+        record.phone + " " +
+        record.name
+      ).toLowerCase();
+
+      return text.includes(search);
+
+    });
 
 
-  if (records.length === 0) {
+  if (filtered.length === 0) {
 
     container.innerHTML =
-      '<div class="empty">Записів поки немає</div>';
+      '<div class="empty">Записів не знайдено</div>';
 
     return;
-
   }
 
 
-  container.innerHTML = records.map(function(record) {
+  container.innerHTML =
+    filtered.map(function(record) {
 
-    return `
+      return `
+        <div class="record">
 
-      <div class="record">
+          <div class="car">
+            🚗 ${record.carNumber}
+          </div>
 
-        <div class="car">
-          🚗 ${record.carNumber}
+          <div>👤 ${record.name || "—"}</div>
+
+          <div>📞 ${record.phone || "—"}</div>
+
+          <div class="time">
+            🕒 ${record.time}
+          </div>
+
+          ${
+            record.photo
+              ? `<img src="${record.photo}">`
+              : ""
+          }
+
+          <button
+            class="delete-btn"
+            onclick="deleteRecord(${record.originalIndex})"
+          >
+            🗑️ Видалити запис
+          </button>
+
         </div>
+      `;
 
-        <div>
-          👤 ${record.name || "—"}
-        </div>
-
-        <div>
-          📞 ${record.phone || "—"}
-        </div>
-
-        <div class="time">
-          🕒 ${record.time}
-        </div>
-
-        ${record.photo
-          ? `<img src="${record.photo}">`
-          : ""
-        }
-
-      </div>
-
-    `;
-
-  }).join("");
+    }).join("");
 
 }
 
